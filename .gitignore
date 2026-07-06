@@ -1,0 +1,19 @@
+# Binaries
+**/*.out
+**/*.exe
+**/push_swap
+
+# Objects
+**/*.o
+
+# Library
+**/*.a
+libft/*.a
+
+# Extras
+**/ft_testers.c
+
+# IDE
+.idea
+.vscode
+.editorconfig
