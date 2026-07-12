@@ -6,7 +6,7 @@
 #    By: eroque-d <eroque-d@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/06 14:33:42 by eroque-d          #+#    #+#              #
-#    Updated: 2026/07/06 15:03:14 by eroque-d         ###   ########.fr        #
+#    Updated: 2026/07/12 13:37:59 by eroque-d         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,11 @@ CFLAGS      = -Wall -Wextra -Werror -I./include -I./libft/includes
 LIB_DIR 	= libft
 LIB_NAME	= $(LIB_DIR)/libft.a
 
-SRC        = src/main.c
+SRC        = 	src/main.c 					\
+				src/stack/stack_init.c 		\
+				src/stack/stack_modifiers.c \
+				src/operations/pb.c			\
+				src/operations/pa.c
 OBJS       = $(SRC:.c=.o)
 
 all: $(LIB_NAME) $(NAME)
