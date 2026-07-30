@@ -6,17 +6,17 @@
 /*   By: eroque-d <eroque-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/12 13:20:12 by eroque-d          #+#    #+#             */
-/*   Updated: 2026/07/12 13:20:27 by eroque-d         ###   ########.fr       */
+/*   Updated: 2026/07/30 14:51:26 by eroque-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-t_stack	*stack_new_node(int value)
+t_node	*stack_new_node(int value)
 {
-	t_stack	*node;
+	t_node	*node;
 
-	node = malloc(sizeof(t_stack));
+	node = malloc(sizeof(t_node));
 	if (!node)
 		return (NULL);
 	node->value = value;
@@ -26,31 +26,32 @@ t_stack	*stack_new_node(int value)
 	return (node);
 }
 
-void	stack_init_control(t_control *ctrl)
+void	stack_init(t_stack *stack)
 {
-	if (!ctrl)
+	if (!stack)
 		return ;
-	ctrl->head = NULL;
-	ctrl->size = 0;
+	stack->head = NULL;
+	stack->size = 0;
+	stack->stats = NULL;
 }
 
-void	stack_clear(t_control *ctrl)
+void	stack_clear(t_stack *stack)
 {
-	t_stack	*current;
-	t_stack	*next_node;
+	t_node	*current;
+	t_node	*next_node;
 	int		i;
 
-	if (!ctrl || !ctrl->head)
+	if (!stack || !stack->head)
 		return ;
-	current = ctrl->head;
+	current = stack->head;
 	i = 0;
-	while (i < ctrl->size)
+	while (i < stack->size)
 	{
 		next_node = current->next;
 		free(current);
 		current = next_node;
 		i++;
 	}
-	ctrl->head = NULL;
-	ctrl->size = 0;
+	stack->head = NULL;
+	stack->size = 0;
 }

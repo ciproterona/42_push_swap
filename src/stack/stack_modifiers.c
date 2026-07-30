@@ -6,64 +6,62 @@
 /*   By: eroque-d <eroque-d@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/12 13:21:03 by eroque-d          #+#    #+#             */
-/*   Updated: 2026/07/12 13:21:16 by eroque-d         ###   ########.fr       */
+/*   Updated: 2026/07/29 15:31:01 by eroque-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-void	stack_add_back(t_control *ctrl, t_stack *new_node)
+void	stack_add_back(t_stack *stack, t_node *new_node)
 {
-	t_stack	*tail;
+	t_node	*tail;
 
-	if (!ctrl || !new_node)
+	if (!stack || !new_node)
 		return ;
-	if (!ctrl->head)
+	if (!stack->head)
 	{
-		ctrl->head = new_node;
+		stack->head = new_node;
 		new_node->next = new_node;
 		new_node->prev = new_node;
 	}
 	else
 	{
-		tail = ctrl->head->prev;
+		tail = stack->head->prev;
 		tail->next = new_node;
 		new_node->prev = tail;
-		new_node->next = ctrl->head;
-		ctrl->head->prev = new_node;
+		new_node->next = stack->head;
+		stack->head->prev = new_node;
 	}
-	ctrl->size++;
+	stack->size++;
 }
 
-void	stack_add_front(t_control *ctrl, t_stack *new_node)
+void	stack_add_front(t_stack *stack, t_node *new_node)
 {
-	if (!ctrl || !new_node)
+	if (!stack || !new_node)
 		return ;
-	stack_add_back(ctrl, new_node);
-	ctrl->size--;
-	ctrl->head = new_node;
-	ctrl->size++;
+	stack_add_back(stack, new_node);
+	stack->head = new_node;
 }
 
-t_stack	*stack_pop_front(t_control *ctrl)
+t_node	*stack_pop_front(t_stack *stack)
 {
-	t_stack	*top;
-	t_stack	*tail;
+	t_node	*top;
+	t_node	*tail;
 
-	if (!ctrl || !ctrl->head)
+	if (!stack || !stack->head)
 		return (NULL);
-	top = ctrl->head;
-	if (ctrl->size == 1)
-		ctrl->head = NULL;
+	top = stack->head;
+	if (stack->size == 1)
+		stack->head = NULL;
 	else
 	{
 		tail = top->prev;
-		ctrl->head = top->next;
-		tail->next = ctrl->head;
-		ctrl->head->prev = tail;
+		stack->head = top->next;
+		tail->next = stack->head;
+		stack->head->prev = tail;
 	}
 	top->next = top;
 	top->prev = top;
-	ctrl->size--;
+	stack->size--;
 	return (top);
 }
