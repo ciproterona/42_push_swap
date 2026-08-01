@@ -3,66 +3,82 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eroque-d <eroque-d@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eroque-d <eroque-d@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 14:44:45 by eroque-d          #+#    #+#             */
-/*   Updated: 2026/07/12 13:42:15 by eroque-d         ###   ########.fr       */
+/*   Updated: 2026/08/01 18:57:12 by eroque-d         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static void	print_stacks(t_control *a, t_control *b)
+static int	set_strategy(char *arg, t_program *program)
 {
-	t_stack	*current;
-	int		i;
-
-	ft_printf("--- STATE OF STACK ---\nSTK A (Size %d): ", a->size);
-	if (a->head)
-	{
-		current = a->head;
-		i = 0;
-		while (i++ < a->size)
-		{
-			ft_printf("%d ", current->value);
-			current = current->next;
-		}
-	}
-	ft_printf("\nSTK B (Size %d): ", b->size);
-	if (b->head)
-	{
-		current = b->head;
-		i = 0;
-		while (i++ < b->size)
-		{
-			ft_printf("%d ", current->value);
-			current = current->next;
-		}
-	}
-	ft_printf("\n-------------------------\n\n");
+	if (ft_strncmp(arg, "--simple", 9) == 0)
+		program->strategy = STRATEGY_SIMPLE;
+	else if (ft_strncmp(arg, "--medium", 9) == 0)
+		program->strategy = STRATEGY_MEDIUM;
+	else if (ft_strncmp(arg, "--complex", 10) == 0)
+		program->strategy = STRATEGY_COMPLEX;
+	else if (ft_strncmp(arg, "--adaptive", 11) == 0)
+		program->strategy = STRATEGY_ADAPTIVE;
+	else
+		return (0);
+	return (1);
 }
 
-int	main(void)
+static int	handle_flag(char *arg, t_program *program)
 {
-	t_control	stack_a;
-	t_control	stack_b;
+	if (set_strategy(arg, program))
+		return (1);
+	if (ft_strncmp(arg, "--bench", 8) == 0)
+	{
+		program->bench = 1;
+		return (1);
+	}
+	if (arg[0] == '-' && (arg[1] < '0' || arg[1] > '9'))
+		return (-1);
+	return (0);
+}
 
-	stack_init_control(&stack_a);
-	stack_init_control(&stack_b);
+static int	parse_arguments(t_program *program, int argc, char **argv)
+{
+	int	i;
+	int	flag;
 
-	stack_add_back(&stack_a, stack_new_node(30));
-	stack_add_back(&stack_a, stack_new_node(10));
-	stack_add_back(&stack_a, stack_new_node(20));
+	i = 1;
+	while (i < argc)
+	{
+		flag = handle_flag(argv[i], program);
+		if (flag == -1 || (flag == 0
+				&& !parse_and_populate(argv[i], &program->a)))
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
-	ft_printf("Initial State (Before the pb):\n");
-	print_stacks(&stack_a, &stack_b);
+int	main(int argc, char **argv)
+{
+	t_program	program;
 
-	pb(&stack_a, &stack_b);
-
-	ft_printf("Final State (After the pb):\n");
-	print_stacks(&stack_a, &stack_b);
-
-	stack_clear(&stack_a);
-	stack_clear(&stack_b);
+	if (argc < 2)
+		return (0);
+	program_init(&program);
+	if (!parse_arguments(&program, argc, argv))
+		program_error(&program);
+	if (program.a.size == 0)
+	{
+		program_clear(&program);
+		return (0);
+	}
+	index_stack(&program.a);
+	program.disorder = compute_disorder(&program.a);
+	sort_selected(&program.a, &program.b, program.strategy, program.disorder);
+	if (program.stats.write_error)
+		program_error(&program);
+	if (program.bench)
+		print_benchmark(&program.stats, program.strategy, program.disorder);
+	program_clear(&program);
 	return (0);
 }
