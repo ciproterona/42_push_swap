@@ -12,6 +12,8 @@ libft/*.a
 
 # Extras
 **/ft_testers.c
+psv/
+tests/
 
 # IDE
 .idea
